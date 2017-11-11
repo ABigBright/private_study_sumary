@@ -1,0 +1,66 @@
+"Vim config here.
+syntax enable
+syntax on
+set nu
+set smartindent
+set autoindent
+set cindent
+set shiftwidth=4
+set tabstop=4
+set ruler
+set showmatch
+set mouse=a
+color evening
+set diffopt=vertical
+
+"ctags configuration
+set tags=tags
+
+"Tlist configuration
+let Tlist_Show_One_File=1
+let Tlist_Exit_OnlyWindow=1
+
+"cscope configuration
+set cscopequickfix=s-,g-,c-,d-,i-,t-,e-
+cs add ./cscope.out
+
+"winmanager configur
+let g:winManagerWindowLayout = 'FileExplorer|TagList'
+
+"MiniBufExplorer config
+let g:miniBufExplMapCTabSwitchBufs=1
+let g:miniBufExplMapWindowsNavVim=1
+let g:miniBufExplMapWindowNavArrows=1
+
+"cscope map 
+nmap <c-_>s :cs find s <c-r>=expand("<cword>")<cr><cr>
+nmap <C-_>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-_>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-_>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+"map key function
+nmap <silent> <F2> :Tlist<cr>
+nmap <F3> :vimgrep /<c-r><c-w>/g **/*.
+nmap <silent> <F4> :vi ~/.vimrc<cr>
+nmap <F5> :Rgrep <c-r><c-w><cr>
+nmap <F6> :!ctags -R <cr>
+nmap <silent> <F8> :!cscope -Rbq<cr>
+nmap <silent> <F9> :WMToggle<cr>
+nmap <silent> <F7> :cs add ./cscope<cr>
+
+nmap <silent> <C-F9> :echo "
+	\ F2   - Tlist\r\n
+	\ F3   - vimgrep\r\n
+	\ F4   - vimrc\r\n
+	\ F9   - winmanager\r\n
+	\ C-F9 - help\r\n
+	\ F5   - Rgrep\r\n
+	\ F6   - ctags -R\r\n
+	\ F8   - cscope -Rbq\r\n
+	\ F7   - cs add cscope.out
+\"<cr>
+
