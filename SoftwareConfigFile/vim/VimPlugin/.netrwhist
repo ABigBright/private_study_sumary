@@ -1,0 +1,9 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =7
+let g:netrw_dirhist_1='/home/brightq/f/s805-buildroot/buildroot_openlinux/bootloader/uboot/board'
+let g:netrw_dirhist_2='/lib/systemd/system/display-manager.service.d'
+let g:netrw_dirhist_3='/home/brightq/mysvn/my-linux-code/File/my_file_opr'
+let g:netrw_dirhist_4='/home/brightq/mysvn/my-linux-code/Other/open_camera'
+let g:netrw_dirhist_5='/home/brightq/mysvn/my-linux-code/Process/my_fork'
+let g:netrw_dirhist_6='/etc'
+let g:netrw_dirhist_7='/home/brightq/MySvn'
