@@ -57,21 +57,30 @@ char dlist_insert_node_into_tail(dlist_node** dlist_head,
 					   			 dlist_node* insert_node)
 {   
 	dlist_node* dlist_tail = NULL;
-	dlist_node* tmp_node   = *dlist_head;
+	dlist_node** tmp_node   = dlist_head;
 
 	if ((NULL == insert_node) || (NULL == dlist_head))
 		return false;
 
-	while (NULL != tmp_node) {
-		dlist_tail = tmp_node;
-		tmp_node   = tmp_node->next;
+	while (NULL != *tmp_node) {
+	#if 0
+		printf("User's List : %d\r\n", *tmp_node);
+		printf("User's List Next : %d\r\n", (*tmp_node)->next);
+		printf("User's List Prev : %d\r\n", (*tmp_node)->prev);
+	#endif
+		dlist_tail = *tmp_node;
+		tmp_node   = &((*tmp_node)->next);
 	}
+#if 0
+	printf("tmp_node : %d\r\n", *tmp_node);
+	printf("dlist_tail : %d\r\n", dlist_tail);
+#endif
 
-	tmp_node          = insert_node;
+	*tmp_node         = insert_node;
 	insert_node->prev = dlist_tail;
 	
 	if (!*dlist_head)
-		*dlist_head = tmp_node;
+		*dlist_head = *tmp_node;
 
 	return true;
 }
@@ -86,6 +95,7 @@ dlist_node* dlist_delete_node(dlist_node** dlist_head,
 {
 	dlist_node** walk = dlist_head;
 
+
 	if ((NULL == dlist_head) || (NULL == node))
 		return NULL;
 
@@ -94,10 +104,10 @@ dlist_node* dlist_delete_node(dlist_node** dlist_head,
 		walk = &(*walk)->next;
 	}
 	
-	*walk = node->next;
-
 	if (node->next) 						// not the dlist tail 
 		node->next->prev = (*walk)->prev;
+	
+	*walk = node->next;
 	
 	return node;
 }
@@ -114,7 +124,11 @@ char freelist_alloc_node(dlist_node** freelist, dlist_node** node)
 
 	*node     = *freelist;
 	*freelist = (*freelist)->next;
-	
+
+#if 1
+	(*node)->next = NULL;
+	(*node)->prev = NULL;
+#endif
 	return true;
 }
 
