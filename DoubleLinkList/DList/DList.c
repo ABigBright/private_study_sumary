@@ -51,8 +51,7 @@ int dListInsertNodeIntoTail(dlist_node* dList, dlist_node* node)
 
 
 // description : delete node from list
-dlist_node* dListDeleteNode(dlist_node* dList, 
-							  dlist_node* node)
+dlist_node* dListDeleteNode(dlist_node* dList, dlist_node* node)
 {
 	dlist_node** walk = &dList;
 

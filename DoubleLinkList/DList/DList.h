@@ -6,8 +6,6 @@
 #ifndef DLIST_H
 #define DLIST_H
 
-#include <stdio.h>
-
 typedef struct _node_data {
 	int val;
 } str_node_data;
