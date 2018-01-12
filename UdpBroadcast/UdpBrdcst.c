@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -34,6 +35,10 @@ int main(void)
 		return -1;
 	}
 
+#if 0 
+// This is a bug, as a client, it can't bind sock addr, 
+// if you force do it, it will turn out error.
+
 	// Prepare the source sock addr
 	struct sockaddr_in srcInetAddr;
 	if (-1 == SockPrepareInetAddr("127.0.0.1", 30000, &srcInetAddr)) {
@@ -45,12 +50,20 @@ int main(void)
 		printf("Bind source addr Fail!\r\n");
 		return -2;
 	}
+#endif
 
 	// prepare the destination sock addr
 	struct sockaddr_in destInetAddr;
-	if (-1 == SockPrepareInetAddr("192.168.18.1", 30001, &destInetAddr)) {
+	if (-1 == SockPrepareInetAddr("255.255.255.255", 30001, &destInetAddr)) {
 		printf("Prepare dest addr fail!\r\n");
-		return -5;
+		return -2;
+	}
+
+	// If you send udp broadcast datagram, you must enable the sock option broadcast function.
+	int sockBroadcastSet = 1;
+	if (-1 == setsockopt(sockDescriptor, SOL_SOCKET, SO_BROADCAST, &sockBroadcastSet, sizeof(int))) {
+		perror("Setsockopt Fail\r\n");
+		return -3;
 	}
 
 	ssize_t sendtoRet = -1;
@@ -67,6 +80,8 @@ int main(void)
 	}
 
 	printf("The end!\r\n");
+
+	close(sockDescriptor);
 
 	return 0;
 }
