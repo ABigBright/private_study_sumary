@@ -4,26 +4,26 @@ import socket, time
 
 ser = socket.socket()
 
-def tcpserver_init(ip, port):
+def tcpser_init(ip, port):
 	ser = socket.socket()
 	ser.bind((ip,port))
 	ser.listen()
 	# print(ser)
 	return ser.accept()
 
-def tcpserver_recv(cli):
+def tcpser_recv(cli):
 	return cli.recv(100)
 
-def tcpserver_send(cli):
+def tcpser_send(cli):
 	cli.send(b'xyz')
 
 # print(ser)
-cli, cliaddr = tcpserver_init('localhost', 9999)
+cli, cliaddr = tcpser_init('localhost', 9999)
 cnt = 0
 while True:
 	time.sleep(1)	
-	print("from client [%d] : %s" %(cnt, cliaddr[0]), tcpserver_recv(cli))
+	print("from client [%d] : %s" %(cnt, cliaddr[0]), tcpser_recv(cli))
 	cnt += 1
-	tcpserver_send(cli)
+	tcpser_send(cli)
 ser.close()
 
