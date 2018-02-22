@@ -11,7 +11,7 @@ void swap(t* a, t* b)
 	*b = tmp;
 }
 
-void prt_array(t* a, int n)
+void arr_show(t* a, int n)
 {
 	for (int i = 0; i < n; i++) {
 		printf("%d ", a[i]);
@@ -56,7 +56,7 @@ int main(void)
 {
 	t a[10] = {1, 6, 4, 3, 3, 5, 9, 2, 6, 8};
 
-	prt_array(a, 10);
+	arr_show(a, 10);
 	my_qsort(a, a+9);
-	prt_array(a, 10);
+	arr_show(a, 10);
 }
