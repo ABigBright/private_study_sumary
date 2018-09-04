@@ -11,6 +11,14 @@ link = 'http://www.dygang.com'
 me = 'GET'
 enc = 'gbk'
 
+g_film_info = {
+    id : 0,
+    'name' : '',
+    'dl_link' : []
+}
+
+g_film_info_list = []
+
 def get_rsps(me=None, lnk=None, enc=None):
     rsps = requests.request(me, lnk)
     rsps.encoding = enc
@@ -32,7 +40,7 @@ def parse_dygang_film_type(elemt_content=None):
         tmp_dic['name'] = t1[1]
         tmp_dic['link'] = t1[0]
         tmp_lst.append(tmp_dic.copy())
-    return tmp_lst;
+    return tmp_lst
 
 def parse_dygang_film_ticket(elemt_cont=None):
     tmp_dict = {'id':'', 'name':'', 'link':''}
@@ -56,28 +64,27 @@ def parse_dygang_film_dldlink(elemt_cont=None):
         tmp_list.append(tmp_dict.copy())
     return tmp_list
 
-
 def main():
+
     rsps = get_rsps(me, link, enc)
     ele_cont = parse_html_element(rsps, 'td[class="bg-fleet"] > a')
     ftype_lst = parse_dygang_film_type(ele_cont)
 
-    for j in ftype_lst:
-        rsps = get_rsps(me, j['link'], enc)
-        ele_cont = parse_html_element(rsps, '.classlinkclass')
-        fticket_lst = parse_dygang_film_ticket(ele_cont)
-        for i in fticket_lst:
-            i['film_type'] = j['name']
+    for i in ftype_lst:
+        print("%s. %s" %(i['id'], i['name']))
+    sel = int(input('\nPlease input the selection: '))
+    print('You have select the \"%s\", please hold on' %(ftype_lst[sel]['name']))
+    print('Start request the %s\n' %(ftype_lst[sel]['link']))
 
-            rsps = get_rsps(me, i['link'], enc)
-            ele_cont = parse_html_element(rsps, 'td[style="word-break: break-all; line-height: 18px"] a')
-            fdldlnk_list = parse_dygang_film_dldlink(ele_cont)
+    rsps = get_rsps(me, ftype_lst[sel]['link'], enc)
+    ele_cont = parse_html_element(rsps, '.classlinkclass')
+    fticket_lst = parse_dygang_film_ticket(ele_cont)
+    for i in fticket_lst:
+        g_film_info['name'] = i['name']
 
-            pt = PrettyTable(['编号', '链接类型', '链接', '类别'])
-            for k in fdldlnk_list:
-                k['film_type'] = i['film_type']
-                pt.add_row([k['id'], k['dldlnk_type'], k['link'], k['film_type']])
-            print(pt)
+        rsps = get_rsps(me, i['link'], enc)
+        ele_cont = parse_html_element(rsps, )
+
 
 if __name__ == '__main__':
     main()
