@@ -1,6 +1,9 @@
-import requests
 import time
+import sys
+import os
+import requests
 import lxml.etree as etree
+from prettytable import PrettyTable
 
 link = 'http://www.dygang.com'
 me = 'GET'
@@ -14,15 +17,12 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0'
 }
 
-g_film_class = []
-g_film_access_link = []
-
 def get_response(me=None, lnk=None, enc=None):
     response = requests.request(me, lnk, headers=headers)
     response.encoding = enc
     return response
 
-def parse_html_from_xpath(response=None, xpath=None):
+def parse_html_from_xpath(response: object = None, xpath: object = None) -> object:
     html = etree.HTML(response.text, etree.HTMLParser())
     xpath_result = html.xpath(xpath)
     return xpath_result
@@ -41,10 +41,9 @@ def film_class_print(film_class):
     for i, j in enumerate(film_class):
         print(i, ' - ', j[0])
 
-def get_film_class_select():
+def get_film_class_select(film_class):
     select = int(input('Please input the film class ID: '))
-    print(g_film_class)
-    return 0 if select >= len(g_film_class) else select
+    return 0 if select >= len(film_class) else select
 
 def parse_film_access_link(film_class, select, page=2):
     print('Start parse the %s page of %s' %(page, film_class[select][0]))
@@ -63,22 +62,34 @@ def parse_film_pages(film_class, select):
     element = parse_html_from_xpath(response, '//a[@title="Total record"]/b')
     return int(element[0].text[:-1]) + 1
 
-def parse_all_film_access_link(film_class):
-    pass
+def parse_all_film_access_link():
+    film_class = parse_film_class()
+    film_class_print(film_class)
+    select = get_film_class_select(film_class)
+    pages = parse_film_pages(film_class, select)
+    film_access_link = []
+    for page in range(1, pages):
+        film_access_link = parse_film_access_link(film_class, select, str(page))
+        parse_film_download_link(film_access_link)
+    return film_access_link
+
+def parse_film_download_link(film_access_link):
+    all_film_download_link = []
+    for i, j in film_access_link:
+        xpath_result = parse_html_from_xpath(get_response(me, j, enc), '//td[@style="word-break: break-all; line-height: 18px"]/a')
+        one_film_download_link = []
+        one_film_download_link.append(i)
+        for k in xpath_result:
+            one_film_download_link.append(k.get('href'))
+        all_film_download_link.append(one_film_download_link.copy())
+    for name, *links in all_film_download_link:
+        print(name + ":")
+        for link in links:
+            print(">> " + link)
+        print("\r\n")
 
 def main():
-    g_film_class = parse_film_class()
-    film_class_print(g_film_class)
-    select = get_film_class_select()
-    select = 13
-    pages = parse_film_pages(g_film_class, select)
-    for page in range(1, pages):
-        film_access_link = parse_film_access_link(g_film_class, select, str(page))
-        g_film_access_link.extend(film_access_link)
-        time.sleep(1)
-    for i in g_film_access_link:
-        print(i)
-
+    parse_all_film_access_link()
 
 if __name__ == '__main__':
     main()
